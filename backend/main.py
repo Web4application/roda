@@ -1,18 +1,17 @@
-from fastapi import FastAPI, UploadFile, Form
-import pandas as pd
-from io import StringIO
-from automl.trainer import train_model
-from automl.predictor import predict
+from fastapi import FastAPI
+from routers.automl_router import router as automl_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-@app.post("/automl/train")
-async def train(file: UploadFile, target: str = Form(...)):
-    df = pd.read_csv(StringIO((await file.read()).decode()))
-    return {"status": train_model(df, target)}
+# Enable CORS for frontend to access backend APIs
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict this to specific domains later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.post("/automl/predict")
-async def make_prediction(file: UploadFile):
-    df = pd.read_csv(StringIO((await file.read()).decode()))
-    result = predict(df)
-    return {"predictions": result}
+# Include the AutoML routes
+app.include_router(automl_router)
