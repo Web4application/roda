@@ -12,7 +12,7 @@ function App() {
 
     try {
       // Replace 'http://127.0.0.1:8000' with your backend URL
-      const response = await axios.post("http://127.0.0.1:8000/automl/predict", formData, {
+      const response = await axios.post("askroda.com/automl/predict", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
